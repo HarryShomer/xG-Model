@@ -5,30 +5,36 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import roc_curve, auc, log_loss
+from sklearn.externals import joblib
 import matplotlib.pyplot as plt
 import clean_data
 
 
 def get_roc(actual, predictions):
+    """
+    Get the roc curve (and auc score) for the different models
+    """
     fig = plt.figure()
-    plt.title('ROC')
-    plt.legend(loc='lower right')
-    plt.plot([0, 1], [0, 1], 'r--')
+    plt.title('ROC Curves')
     plt.xlim([0, 1])
     plt.ylim([0, 1])
     plt.ylabel('True Positive Rate')
     plt.xlabel('False Positive Rate')
 
-    for key in predictions.keys():
+    colors = ['b', 'g', 'p']
+
+    for model, color in zip(predictions.keys(), colors):
         # Convert preds to just prob of goal
-        preds = [pred[1] for pred in predictions[key]]
+        preds = [pred[1] for pred in predictions[model]]
 
         false_positive_rate, true_positive_rate, thresholds = roc_curve(actual, preds)
         roc_auc = auc(false_positive_rate, true_positive_rate)
-        print("ROC: ", roc_auc)
-        plt.plot(false_positive_rate, true_positive_rate, 'b')
-        plt.text(.1, .9, "AUC="+str(round(roc_auc, 3)))
+        plt.plot(false_positive_rate, true_positive_rate, label=' '.join([model + ':', str(round(roc_auc, 3))]))
 
+    # Add "Random" score
+    plt.plot([0, 1], [0, 1], 'r--', label=' '.join(["Random:", str(.5)]))
+
+    plt.legend(title='AUC Score', loc=4)
     fig.savefig("ROC_xG.png")
 
 
@@ -71,7 +77,7 @@ def fit_random_forest(features_train, labels_train):
         'min_samples_leaf': [50, 100, 250, 500]
     }
 
-    clf = RandomForestClassifier(n_estimators=250, random_state=42, verbose=2)
+    clf = RandomForestClassifier(n_estimators=100, random_state=42, verbose=2)
 
     # Tune hyperparameters
     cv_clf = GridSearchCV(estimator=clf, param_grid=param_grid, cv=10)
@@ -82,7 +88,7 @@ def fit_random_forest(features_train, labels_train):
     print("\nRandom Forest Classifier:", cv_clf)
 
     # Save model
-    pickle.dump(cv_clf, open("rf_xg.pkl", 'wb'))
+    pickle.dump(cv_clf, open("rf_rebounds_xg.pkl", 'wb'))
     return cv_clf
 
 
@@ -116,11 +122,15 @@ def fit_logistic(features_train, labels_train):
 
 def xg_model():
     """
-    Create and test xg model
+    Create and test xg model.
+    
+    Fit three different models (Refer to those specific functions for more info):
+    1. Logistic regression
+    2. Gradient Boosting
+    3. Random Forest
     """
     data = clean_data.get_data()
 
-    # xG not 3 outcomes...
     data['Outcome'] = np.where(data['Outcome'] == 0, 0, np.where(data['Outcome'] == 1, 0, np.where(data['Outcome'] == 2, 1, 3)))
     data = data[data['Outcome'] != 3]
 

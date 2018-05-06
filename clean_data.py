@@ -468,7 +468,6 @@ def clean_pbp(pbp):
     return pbp
 
 
-
 def convert_data(pbp):
         """      
         Convert the data to use in model
@@ -479,7 +478,6 @@ def convert_data(pbp):
                          'Distance', 'Angle',
                          'empty_net',
                          'angle_change',
-                         #'is_rebound', 'is_rush', 'non_sog_rebound',
                          'distance_change', 'time_elapsed',
                          'Type_BACKHAND', 'Type_DEFLECTED', 'Type_SLAP SHOT', 'Type_SNAP SHOT', 'Type_TIP-IN',
                          'Type_WRAP-AROUND', 'Type_WRIST SHOT',
