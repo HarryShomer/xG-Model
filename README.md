@@ -35,24 +35,24 @@ of the data for training the model (so the training and testing sets are both ra
 for each model, I did 10 fold cross validation on the training set to tune the hyperparameters and create each model.
 
 I then tested each model on the test set. Using each of my three new models, I calculated the probability of each shot
-in the test set of being a goal. To evaluate these predictions, I first calculated both the area underneath the ROC Curve
-(AUC) for each model's predictions on the test set. This is graphed below:
+in the test set of being a goal. To evaluate these predictions, I calculated both the area underneath the ROC Curve (AUC)
+and the Log Loss for each model's predictions on the test set. Both of these are shown below:
 
-![](ROC_xG.jpg)
+![](https://github.com/HarryShomer/xG-Model/blob/master/ROC_xG.png)
 
-As you can see they are each very similar with Gradient Boosting having a narrow edge over using a Random Forest
-classifier.
-
-Below is the log loss for each model's predictions:
+Log Loss:
 
 * LR:   0.213
-* RFC:  0.209
+* RF:  0.209
 * GBM:  0.207
 
-These numbers are similar to the AUC scores recorded, with the GBM narrowly leading the pack.
+The AUC score can take values from 0 to 1 with higher being better. For Log Loss they range from 0 to infinity with 0
+being perfect. If we created a model that classified each shot randomly we would get an AUC score of .5 and a log loss
+of .693. So that means each model is definitely better than random.
 
-The one that best predicted out of sample data (as determined by Roc-Auc and log loss) and was chosen as my final model
-was the one built using a Gradient Boosting Classifier.
+In terms of comparison, they are each very similar to each other with the one built using Gradient Boosting narrowly
+leading the pack in both metrics. Due to the fact that the GBM best predicted out of sample data (as determined by both
+measures) I chose it as my final model.
 
 ## Running it yourself
 If you are looking to run this yourself you will need a few things. First, you'll need the proper dependencies. This
