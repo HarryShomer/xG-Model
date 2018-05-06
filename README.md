@@ -38,7 +38,7 @@ I then tested each model on the test set. Using each of my three new models, I c
 in the test set of being a goal. To evaluate these predictions, I first calculated both the area underneath the ROC Curve
 (AUC) for each model's predictions on the test set. This is graphed below:
 
-![](ROC_xG.jpg)
+![](https://github.com/HarryShomer/xG-Model/blob/master/ROC_xG.png)
 
 As you can see they are each very similar with Gradient Boosting having a narrow edge over using a Random Forest
 classifier.
